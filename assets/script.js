@@ -5,18 +5,10 @@ const themeToggle = document.getElementById('theme-toggle');
 async function loadMarkdown(file) {
   content.textContent = 'Loading...';
   try {
-    const res = await fetch('md/' + file + '?t=' + Date.now());  // cache busting
+    const res = await fetch('md/' + file + '?t=' + Date.now());  // cache-buster
     if (!res.ok) throw new Error('Failed to load ' + file);
     const text = await res.text();
-
-    // Parse markdown to HTML
     content.innerHTML = marked.parse(text);
-
-    // Highlight all code blocks after markdown is loaded
-    content.querySelectorAll('pre code').forEach(block => {
-      hljs.highlightElement(block);
-    });
-
   } catch (e) {
     content.textContent = e.message;
   }
@@ -48,11 +40,13 @@ window.addEventListener('popstate', () => {
   }
 });
 
-// Initial load
-const initialHash = location.hash.substring(1);
-const initialFile = initialHash ? initialHash + '.md' : 'anticheat.md';
-const initialLink = Array.from(links).find(l => l.getAttribute('data-md') === initialFile);
-if (initialLink) {
-  initialLink.classList.add('active');
-}
-loadMarkdown(initialFile);
+// On load, open default or hash
+(() => {
+  const hash = location.hash.substring(1);
+  const mdFile = hash ? hash + '.md' : 'anticheat.md';
+  const link = Array.from(links).find(l => l.getAttribute('data-md') === mdFile);
+  if (link) {
+    link.classList.add('active');
+  }
+  loadMarkdown(mdFile);
+})();
