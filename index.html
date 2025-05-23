@@ -2,88 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeZone-AC</title>
-  <style>
-    :root {
-      --main-color: #572b6f;
-      --accent-color: #c575db;
-      --bg-color: #fcfcfc;
-      --text-color: #252331;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--main-color);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-    }
-
-    main {
-      padding: 2rem;
-      flex: 1;
-      text-align: center;
-    }
-
-    footer {
-      background: #eee;
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-    }
-
-    a {
-      color: var(--accent-color);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .button {
-      background: var(--accent-color);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 1.5rem;
-    }
-
-    .button:hover {
-      background: #bd5ada;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SafeZone-AC Docs</title>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <header>
-    <h1>Welcome to SafeZone-AC</h1>
-    <p>Your trusted source for anti-cheat solutions.</p>
-  </header>
+  <div class="sidebar">
+    <h1>SafeZone-AC</h1>
+    <nav>
+      <a href="#anticheat">AntiCheat</a>
+      <a href="#discord">Discord Bot</a>
+      <a href="#faq">FAQs</a>
+      <button id="theme-toggle">🌓 Theme</button>
+    </nav>
+  </div>
+  <main class="content">
+    <section id="anticheat">
+      <h2>AntiCheat</h2>
+      <p>Our AntiCheat module automatically detects and prevents unauthorized modifications, speed hacks, trigger abuse, and common mod menus.</p>
+      <ul>
+        <li>Detection of Lua injection attempts</li>
+        <li>Blacklist and Whitelist system</li>
+        <li>Server-side integrity checks</li>
+      </ul>
+    </section>
 
-  <main>
-    <p>We are building powerful, open anti-cheat systems for communities and developers.</p>
-    <a href="https://github.com/SafeZone-AC" class="button">Visit Our GitHub</a>
+    <section id="discord">
+      <h2>Discord Bot</h2>
+      <p>The SafeZone-AC bot helps your server stay safe by offering automated moderation, alerts, and audit logging.</p>
+      <ul>
+        <li>Slash command support</li>
+        <li>Ban appeal handler</li>
+        <li>Sticky note support & verification</li>
+      </ul>
+    </section>
+
+    <section id="faq">
+      <h2>FAQs</h2>
+      <p><strong>Q:</strong> How do I install SafeZone-AC?<br><strong>A:</strong> Clone the repo and drop it into your FiveM resources folder. Then start it in your `server.cfg`.</p>
+      <p><strong>Q:</strong> Can I customize detections?<br><strong>A:</strong> Yes, check the `config.lua` file in each module.</p>
+      <p><strong>Q:</strong> Is there a Discord support channel?<br><strong>A:</strong> Yes, join our community for live help.</p>
+    </section>
   </main>
-
-  <footer>
-    &copy; 2025 SafeZone-AC. All rights reserved.
-  </footer>
+  <script src="assets/script.js"></script>
 </body>
 </html>
