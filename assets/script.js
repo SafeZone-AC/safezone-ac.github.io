@@ -5,7 +5,7 @@ const themeToggle = document.getElementById('theme-toggle');
 async function loadMarkdown(file) {
   content.textContent = 'Loading...';
   try {
-    const res = await fetch('md/' + file);
+    const res = await fetch('md/' + file + '?t=' + Date.now());  // <-- cache-buster here
     if (!res.ok) throw new Error('Failed to load ' + file);
     const text = await res.text();
     content.innerHTML = marked.parse(text);
