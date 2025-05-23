@@ -2,7 +2,8 @@ const content = document.getElementById('markdown-content');
 const links = document.querySelectorAll('.nav-link');
 const themeToggle = document.getElementById('theme-toggle');
 
-function escapeHTML(str) {
+// Escape text inside code spans to keep HTML safe
+function escapeForSpan(str) {
   return str.replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -16,10 +17,10 @@ function luaHighlight(code) {
   const comments = /--.*$/gm;
   const strings = /(["'])(?:\\.|(?!\1).)*\1/g;
 
-  return code
-    .replace(comments, m => `<span class="token comment">${m}</span>`)
-    .replace(strings, m => `<span class="token string">${m}</span>`)
-    .replace(keywords, m => `<span class="token keyword">${m}</span>`);
+  code = code.replace(comments, m => `<span class="token comment">${escapeForSpan(m)}</span>`);
+  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
+  code = code.replace(keywords, m => `<span class="token keyword">${escapeForSpan(m)}</span>`);
+  return code;
 }
 
 // Minimal JS syntax highlighting
@@ -29,11 +30,11 @@ function jsHighlight(code) {
   const strings = /(["'`])(?:\\.|(?!\1).)*\1/g;
   const numbers = /\b\d+(\.\d+)?\b/g;
 
-  return code
-    .replace(comments, m => `<span class="token comment">${m}</span>`)
-    .replace(strings, m => `<span class="token string">${m}</span>`)
-    .replace(numbers, m => `<span class="token number">${m}</span>`)
-    .replace(keywords, m => `<span class="token keyword">${m}</span>`);
+  code = code.replace(comments, m => `<span class="token comment">${escapeForSpan(m)}</span>`);
+  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
+  code = code.replace(numbers, m => `<span class="token number">${escapeForSpan(m)}</span>`);
+  code = code.replace(keywords, m => `<span class="token keyword">${escapeForSpan(m)}</span>`);
+  return code;
 }
 
 // Minimal JSON highlighting
@@ -43,11 +44,11 @@ function jsonHighlight(code) {
   const numbers = /\b\d+(\.\d+)?\b/g;
   const boolNull = /\b(true|false|null)\b/g;
 
-  return code
-    .replace(keys, m => `<span class="token key">${m}</span>`)
-    .replace(strings, m => `<span class="token string">${m}</span>`)
-    .replace(numbers, m => `<span class="token number">${m}</span>`)
-    .replace(boolNull, m => `<span class="token boolean">${m}</span>`);
+  code = code.replace(keys, m => `<span class="token key">${escapeForSpan(m)}</span>`);
+  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
+  code = code.replace(numbers, m => `<span class="token number">${escapeForSpan(m)}</span>`);
+  code = code.replace(boolNull, m => `<span class="token boolean">${escapeForSpan(m)}</span>`);
+  return code;
 }
 
 // Minimal SQL highlighting
@@ -57,15 +58,17 @@ function sqlHighlight(code) {
   const numbers = /\b\d+\b/g;
   const comments = /--.*$/gm;
 
-  return code
-    .replace(comments, m => `<span class="token comment">${m}</span>`)
-    .replace(strings, m => `<span class="token string">${m}</span>`)
-    .replace(numbers, m => `<span class="token number">${m}</span>`)
-    .replace(keywords, m => `<span class="token keyword">${m.toUpperCase()}</span>`);
+  code = code.replace(comments, m => `<span class="token comment">${escapeForSpan(m)}</span>`);
+  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
+  code = code.replace(numbers, m => `<span class="token number">${escapeForSpan(m)}</span>`);
+  code = code.replace(keywords, m => `<span class="token keyword">${escapeForSpan(m.toUpperCase())}</span>`);
+  return code;
 }
 
 // Minimal HTML/XML highlighting
 function htmlHighlight(code) {
+  // Escape whole code first, then wrap tags only
+  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const tags = /(&lt;\/?[\w\s="'-.:]+&gt;)/g;
   return code.replace(tags, m => `<span class="token tag">${m}</span>`);
 }
@@ -76,24 +79,28 @@ function highlightCodeBlocks() {
     const code = pre.querySelector('code');
     if (!code) return;
 
-    // Detect language from class like "language-lua"
     const lang = code.className.replace('language-', '').toLowerCase();
 
-    let html = escapeHTML(code.textContent);
+    const rawCode = code.textContent;
+
+    let highlighted;
 
     if (lang === 'lua') {
-      html = luaHighlight(html);
+      highlighted = luaHighlight(rawCode);
     } else if (lang === 'js' || lang === 'javascript') {
-      html = jsHighlight(html);
+      highlighted = jsHighlight(rawCode);
     } else if (lang === 'json') {
-      html = jsonHighlight(html);
+      highlighted = jsonHighlight(rawCode);
     } else if (lang === 'sql') {
-      html = sqlHighlight(html);
+      highlighted = sqlHighlight(rawCode);
     } else if (lang === 'html' || lang === 'xml') {
-      html = htmlHighlight(html);
+      highlighted = htmlHighlight(rawCode);
+    } else {
+      // fallback: just escape to avoid raw HTML injection
+      highlighted = escapeForSpan(rawCode);
     }
 
-    pre.innerHTML = `<code class="${code.className}">${html}</code>`;
+    pre.innerHTML = `<code class="${code.className}">${highlighted}</code>`;
   });
 }
 
