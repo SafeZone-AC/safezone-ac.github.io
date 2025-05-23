@@ -1,7 +1,15 @@
-# AntiCheat
+# AntiCheat Documentation
 
-Our AntiCheat module automatically detects and prevents unauthorized modifications, speed hacks, trigger abuse, and common mod menus.
+Welcome to the SafeZone AntiCheat documentation.
 
-- Detection of Lua injection attempts
-- Blacklist and Whitelist system
-- Server-side integrity checks
+## Features
+
+- Real-time detection
+- Automatic banning
+- Customizable rules
+
+```lua
+-- Example Lua snippet
+if playerIsCheating then
+  banPlayer(playerID)
+end

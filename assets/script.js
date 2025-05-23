@@ -1,50 +1,67 @@
-const content = document.getElementById('markdown-content');
-const links = document.querySelectorAll('.nav-link');
-const themeToggle = document.getElementById('theme-toggle');
+// Markdown docs navigation & loading + dark/light toggle + Prism highlight
 
-async function loadMarkdown(file) {
-  content.textContent = 'Loading...';
-  try {
-    const res = await fetch('md/' + file);
-    if (!res.ok) throw new Error('Failed to load ' + file);
-    const text = await res.text();
-    content.innerHTML = marked.parse(text);
-  } catch (e) {
-    content.textContent = e.message;
-  }
+const mdContainer = document.getElementById('markdown-content');
+const navLinks = document.querySelectorAll('.nav-link');
+const themeToggle = document.getElementById('theme-toggle');
+const prismDarkTheme = document.getElementById('prism-dark-theme');
+
+function fetchAndRenderMarkdown(path) {
+  fetch(path)
+    .then(res => {
+      if (!res.ok) throw new Error(`Failed to load ${path}: ${res.statusText}`);
+      return res.text();
+    })
+    .then(mdText => {
+      // Convert markdown to HTML with syntax highlight
+      const html = marked.parse(mdText, {
+        highlight: function(code, lang) {
+          if (Prism.languages[lang]) {
+            return Prism.highlight(code, Prism.languages[lang], lang);
+          }
+          return code; // fallback, no highlight
+        }
+      });
+      mdContainer.innerHTML = html;
+      Prism.highlightAll();
+    })
+    .catch(err => {
+      mdContainer.innerHTML = `<p style="color:red;">Error loading markdown file: ${err.message}</p>`;
+    });
 }
 
-links.forEach(link => {
+// Navigation click handler
+navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
-    links.forEach(l => l.classList.remove('active'));
+    // Update active link
+    navLinks.forEach(l => l.classList.remove('active'));
     link.classList.add('active');
+
+    // Load markdown
     const mdFile = link.getAttribute('data-md');
-    loadMarkdown(mdFile);
-    history.pushState(null, '', '#' + mdFile.replace('.md',''));
+    fetchAndRenderMarkdown(mdFile);
   });
 });
 
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-});
-
-window.addEventListener('popstate', () => {
-  const hash = location.hash.substring(1);
-  const mdFile = hash ? hash + '.md' : 'anticheat.md';
-  const link = Array.from(links).find(l => l.getAttribute('data-md') === mdFile);
-  if (link) {
-    links.forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
-    loadMarkdown(mdFile);
+// Theme toggle function
+function setTheme(isDark) {
+  document.body.classList.toggle('dark', isDark);
+  if (isDark) {
+    prismDarkTheme.removeAttribute('disabled');
+  } else {
+    prismDarkTheme.setAttribute('disabled', 'true');
   }
+  localStorage.setItem('darkMode', isDark);
+}
+
+// Load saved theme or default to light
+const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+setTheme(savedDarkMode);
+
+// Toggle button event
+themeToggle.addEventListener('click', () => {
+  setTheme(!document.body.classList.contains('dark'));
 });
 
-// Load page based on URL hash or default to anticheat.md
-const initialHash = location.hash.substring(1);
-const initialFile = initialHash ? initialHash + '.md' : 'anticheat.md';
-const initialLink = Array.from(links).find(l => l.getAttribute('data-md') === initialFile);
-if (initialLink) {
-  initialLink.classList.add('active');
-}
-loadMarkdown(initialFile);
+// Load initial markdown (first nav link)
+fetchAndRenderMarkdown(navLinks[0].getAttribute('data-md'));

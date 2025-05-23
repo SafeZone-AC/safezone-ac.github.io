@@ -1,25 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SafeZone-AC Docs</title>
-<link rel="stylesheet" href="assets/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SafeZone-AC Docs</title>
+
+  <!-- GitHub Markdown CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css" rel="stylesheet" />
+
+  <!-- Prism Light Theme -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
+
+  <!-- Prism Dark Theme (disabled by default) -->
+  <link id="prism-dark-theme" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css" rel="stylesheet" disabled />
+
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
-  <div class="sidebar">
-    <h1>SafeZone-AC</h1>
-    <nav>
-      <a href="#" data-md="anticheat.md" class="nav-link">AntiCheat</a>
-      <a href="#" data-md="discordbot.md" class="nav-link">Discord Bot</a>
-      <a href="#" data-md="faq.md" class="nav-link">FAQs</a>
-      <button id="theme-toggle">🌓 Theme</button>
-    </nav>
-  </div>
+  <nav class="sidebar">
+    <h1>SafeZone-AC Docs</h1>
+    <ul>
+      <li><a href="#" data-md="md/anticheat.md" class="nav-link active">AntiCheat</a></li>
+      <li><a href="#" data-md="md/discordbot.md" class="nav-link">Discord Bot</a></li>
+      <li><a href="#" data-md="md/faq.md" class="nav-link">FAQs</a></li>
+    </ul>
+    <button id="theme-toggle">Toggle Dark/Light</button>
+  </nav>
+
   <main class="content">
-    <article id="markdown-content">Loading...</article>
+    <article id="markdown-content" class="markdown-body">Loading...</article>
   </main>
+
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
   <script src="assets/script.js"></script>
 </body>
 </html>
