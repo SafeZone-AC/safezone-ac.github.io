@@ -104,8 +104,6 @@ body.dark .content {
 }
 
 /* ----------- MARKDOWN CODE BLOCKS ----------- */
-
-/* Container for fenced code blocks */
 #markdown-content pre {
   background-color: #f6f8fa;
   border-radius: 8px;
@@ -114,17 +112,16 @@ body.dark .content {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 1rem;
   line-height: 1.5;
-  color: #24292e;  /* Keep text default color, no highlight colors */
+  color: #24292e;
   box-shadow: none;
   border: none;
-  white-space: pre-wrap !important; /* preserve line breaks and wrapping */
-  word-break: break-word;
+  white-space: pre; /* Preserve all line breaks and spaces */
+  word-break: normal;
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* Ensure code inside pre also preserves line breaks */
 #markdown-content pre code {
-  white-space: inherit;
+  white-space: inherit; /* Inherit white-space from pre */
   display: block;
 }
 
