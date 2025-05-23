@@ -5,10 +5,15 @@ const themeToggle = document.getElementById('theme-toggle');
 async function loadMarkdown(file) {
   content.textContent = 'Loading...';
   try {
-    const res = await fetch('md/' + file + '?t=' + Date.now());  // <-- cache-buster here
+    const res = await fetch('md/' + file + '?t=' + Date.now());  // cache-buster
     if (!res.ok) throw new Error('Failed to load ' + file);
     const text = await res.text();
     content.innerHTML = marked.parse(text);
+
+    // Highlight code blocks after markdown is rendered
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightElement(block);
+    });
   } catch (e) {
     content.textContent = e.message;
   }
@@ -40,7 +45,7 @@ window.addEventListener('popstate', () => {
   }
 });
 
-// Load page based on URL hash or default to anticheat.md
+// Load initial page based on URL hash or default
 const initialHash = location.hash.substring(1);
 const initialFile = initialHash ? initialHash + '.md' : 'anticheat.md';
 const initialLink = Array.from(links).find(l => l.getAttribute('data-md') === initialFile);
