@@ -1,13 +1,16 @@
+/* ----------- BODY & LAYOUT ------------ */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   transition: background 0.3s, color 0.3s;
+  background-color: #fafafa;
+  color: #24292e;
 }
 
 .sidebar {
-  background-color: #252331;
-  color: #fff;
+  background-color: #24292e;
+  color: #ffffff;
   width: 250px;
   min-height: 100vh;
   padding: 2rem 1rem;
@@ -15,112 +18,166 @@ body {
 }
 
 .sidebar h1 {
-  color: #bd5ada;
+  color: #79b8ff;
   margin-bottom: 2rem;
 }
 
 .sidebar nav a {
   display: block;
-  color: #eee;
+  color: #cdd9e5;
   margin: 0.5rem 0;
   text-decoration: none;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .sidebar nav a.active,
 .sidebar nav a:hover {
   text-decoration: underline;
-  color: #bd5ada;
+  color: #79b8ff;
 }
 
 .sidebar nav button {
   margin-top: 1rem;
   background: none;
-  border: 1px solid #ccc;
-  color: #ccc;
+  border: 1px solid #cdd9e5;
+  color: #cdd9e5;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar nav button:hover {
+  background-color: #79b8ff;
+  color: #fff;
 }
 
 .content {
   padding: 2rem;
   flex: 1;
   background-color: #fff;
-  color: #222;
+  color: #24292e;
   overflow-y: auto;
   height: 100vh;
   box-sizing: border-box;
 }
 
+/* Dark mode styles */
+body.dark {
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+body.dark .sidebar {
+  background-color: #161b22;
+  color: #c9d1d9;
+}
+
+body.dark .sidebar h1 {
+  color: #58a6ff;
+}
+
+body.dark .sidebar nav a {
+  color: #8b949e;
+}
+
+body.dark .sidebar nav a.active,
+body.dark .sidebar nav a:hover {
+  color: #58a6ff;
+  text-decoration: underline;
+}
+
+body.dark .sidebar nav button {
+  border-color: #8b949e;
+  color: #8b949e;
+}
+
+body.dark .sidebar nav button:hover {
+  background-color: #58a6ff;
+  color: #0d1117;
+}
+
 body.dark .content {
-  background-color: #1e1e2f;
-  color: #f5f5f5;
+  background-color: #0d1117;
+  color: #c9d1d9;
 }
 
-/* ---------- CODE BLOCKS ---------- */
+/* ----------- MARKDOWN CODE BLOCKS ----------- */
 
-/* Code block container */
+/* Container for fenced code blocks */
 #markdown-content pre {
-  background-color: #f0eaff;
-  padding: 1em 1.2em;
-  border-radius: 8px;
+  background-color: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 1em 1.25em;
   overflow-x: auto;
-  font-family: 'Fira Mono', monospace;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   font-size: 0.9rem;
-  box-shadow: 0 4px 8px rgba(189, 90, 170, 0.2);
-  position: relative;
-  counter-reset: linenumber;
+  line-height: 1.45;
+  color: #24292e;
+  box-shadow: inset 0 1px 0 #ffffff;
   margin: 1.5em 0;
+  white-space: pre-wrap; /* wrap long lines */
+  word-break: break-word;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* Dark mode for code blocks */
+/* Dark mode fenced code blocks */
 body.dark #markdown-content pre {
-  background-color: #3a3157;
-  box-shadow: 0 4px 8px rgba(87, 43, 111, 0.5);
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  box-shadow: inset 0 1px 0 #21262d;
 }
 
 /* Inline code style */
 #markdown-content code {
-  background-color: #f2e9ff;
+  background-color: #e1e4e8;
   padding: 0.2em 0.4em;
-  border-radius: 4px;
-  font-family: 'Fira Mono', monospace;
-  font-size: 0.95em;
-  white-space: normal;
-  position: relative;
-  z-index: 1;
+  border-radius: 6px;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 0.85em;
+  color: #24292e;
+  white-space: nowrap;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 body.dark #markdown-content code {
-  background-color: #4e3d78;
+  background-color: #2d333b;
+  color: #c9d1d9;
 }
 
-/* Line numbers - requires JS to wrap lines for effect */
-#markdown-content pre code {
-  display: block;
-  counter-reset: linenumber;
+/* Optional: subtle scrollbar styling for code blocks */
+#markdown-content pre::-webkit-scrollbar {
+  height: 8px;
 }
 
-#markdown-content pre code > * {
-  counter-increment: linenumber;
-  display: block;
-  padding-left: 3em;
-  position: relative;
+#markdown-content pre::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-#markdown-content pre code > *::before {
-  content: counter(linenumber);
-  position: absolute;
-  left: 0;
-  width: 2.5em;
-  text-align: right;
-  color: #a67ccf;
-  font-size: 0.85em;
-  user-select: none;
-  pointer-events: none;
+#markdown-content pre::-webkit-scrollbar-thumb {
+  background-color: #cdd9e5;
+  border-radius: 4px;
 }
 
-/* Dark mode line numbers */
-body.dark #markdown-content pre code > *::before {
-  color: #b499d8;
+body.dark #markdown-content pre::-webkit-scrollbar-thumb {
+  background-color: #484f58;
+}
+
+/* Optional: highlight specific markdown elements like headings */
+#markdown-content h1,
+#markdown-content h2,
+#markdown-content h3 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+body.dark #markdown-content h1,
+body.dark #markdown-content h2,
+body.dark #markdown-content h3 {
+  color: #58a6ff;
 }
