@@ -21,9 +21,11 @@ body {
   color: #eee;
   margin: 0.5rem 0;
   text-decoration: none;
+  cursor: pointer;
 }
-.sidebar nav a:hover {
+.sidebar nav a.active, .sidebar nav a:hover {
   text-decoration: underline;
+  color: #bd5ada;
 }
 .sidebar nav button {
   margin-top: 1rem;
@@ -38,6 +40,9 @@ body {
   flex: 1;
   background-color: #fff;
   color: #222;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
 }
 body.dark .content {
   background-color: #1e1e2f;

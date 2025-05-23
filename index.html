@@ -1,49 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SafeZone-AC Docs</title>
-  <link rel="stylesheet" href="assets/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SafeZone-AC Docs</title>
+<link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
   <div class="sidebar">
     <h1>SafeZone-AC</h1>
     <nav>
-      <a href="#anticheat">AntiCheat</a>
-      <a href="#discord">Discord Bot</a>
-      <a href="#faq">FAQs</a>
+      <a href="#" data-md="anticheat.md" class="nav-link">AntiCheat</a>
+      <a href="#" data-md="discordbot.md" class="nav-link">Discord Bot</a>
+      <a href="#" data-md="faq.md" class="nav-link">FAQs</a>
       <button id="theme-toggle">🌓 Theme</button>
     </nav>
   </div>
   <main class="content">
-    <section id="anticheat">
-      <h2>AntiCheat</h2>
-      <p>Our AntiCheat module automatically detects and prevents unauthorized modifications, speed hacks, trigger abuse, and common mod menus.</p>
-      <ul>
-        <li>Detection of Lua injection attempts</li>
-        <li>Blacklist and Whitelist system</li>
-        <li>Server-side integrity checks</li>
-      </ul>
-    </section>
-
-    <section id="discord">
-      <h2>Discord Bot</h2>
-      <p>The SafeZone-AC bot helps your server stay safe by offering automated moderation, alerts, and audit logging.</p>
-      <ul>
-        <li>Slash command support</li>
-        <li>Ban appeal handler</li>
-        <li>Sticky note support & verification</li>
-      </ul>
-    </section>
-
-    <section id="faq">
-      <h2>FAQs</h2>
-      <p><strong>Q:</strong> How do I install SafeZone-AC?<br><strong>A:</strong> Clone the repo and drop it into your FiveM resources folder. Then start it in your `server.cfg`.</p>
-      <p><strong>Q:</strong> Can I customize detections?<br><strong>A:</strong> Yes, check the `config.lua` file in each module.</p>
-      <p><strong>Q:</strong> Is there a Discord support channel?<br><strong>A:</strong> Yes, join our community for live help.</p>
-    </section>
+    <article id="markdown-content">Loading...</article>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="assets/script.js"></script>
 </body>
 </html>
