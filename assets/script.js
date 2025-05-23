@@ -11,16 +11,64 @@ function escapeForSpan(str) {
             .replace(/'/g, '&#39;');
 }
 
-// Minimal Lua syntax highlighting
+// *** Fixed Minimal Lua syntax highlighting ***
 function luaHighlight(code) {
-  const keywords = /\b(and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g;
-  const comments = /--.*$/gm;
-  const strings = /(["'])(?:\\.|(?!\1).)*\1/g;
+  const escape = str => str.replace(/&/g, '&amp;')
+                           .replace(/</g, '&lt;')
+                           .replace(/>/g, '&gt;')
+                           .replace(/"/g, '&quot;')
+                           .replace(/'/g, '&#39;');
 
-  code = code.replace(comments, m => `<span class="token comment">${escapeForSpan(m)}</span>`);
-  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
-  code = code.replace(keywords, m => `<span class="token keyword">${escapeForSpan(m)}</span>`);
-  return code;
+  code = escape(code);
+
+  const patterns = [
+    { type: 'comment', regex: /--.*$/gm },
+    { type: 'string', regex: /(["'])(?:\\.|(?!\1).)*\1/g },
+    { type: 'keyword', regex: /\b(and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g },
+  ];
+
+  let tokens = [];
+
+  patterns.forEach(({ type, regex }) => {
+    let match;
+    while ((match = regex.exec(code)) !== null) {
+      tokens.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        type,
+        text: match[0]
+      });
+      // Prevent zero-length match infinite loop
+      if (regex.lastIndex === match.index) regex.lastIndex++;
+    }
+  });
+
+  tokens.sort((a, b) => a.start - b.start);
+
+  // Filter overlapping tokens (keep earliest token only)
+  let filtered = [];
+  let lastEnd = 0;
+  for (const token of tokens) {
+    if (token.start >= lastEnd) {
+      filtered.push(token);
+      lastEnd = token.end;
+    }
+  }
+
+  let result = '';
+  let pos = 0;
+  for (const token of filtered) {
+    if (pos < token.start) {
+      result += code.slice(pos, token.start);
+    }
+    result += `<span class="token ${token.type}">${token.text}</span>`;
+    pos = token.end;
+  }
+  if (pos < code.length) {
+    result += code.slice(pos);
+  }
+
+  return result;
 }
 
 // Minimal JS syntax highlighting
