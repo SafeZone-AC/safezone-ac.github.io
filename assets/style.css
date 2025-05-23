@@ -105,19 +105,18 @@ body.dark .content {
 
 /* ----------- MARKDOWN CODE BLOCKS ----------- */
 
-/* Container for fenced code blocks */
+/* ChatGPT-style fenced code blocks */
 #markdown-content pre {
-  background: transparent;   /* no white background */
-  border: 1px solid #ddd;    /* subtle light border */
-  border-radius: 6px;
-  padding: 1em 1.25em;
+  background-color: #f6f8fa; /* subtle light gray background */
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
   overflow-x: auto;
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-  font-size: 0.9rem;
-  line-height: 1.45;
-  color: #24292e;
-  box-shadow: inset 0 1px 0 #ffffff;
-  margin: 1.5em 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #24292e; /* plain text color */
+  box-shadow: none;
+  border: none;
   white-space: pre-wrap; /* wrap long lines */
   word-break: break-word;
   transition: background-color 0.3s, color 0.3s;
@@ -125,18 +124,18 @@ body.dark .content {
 
 /* Dark mode fenced code blocks */
 body.dark #markdown-content pre {
-  background-color: #161b22;
-  border: 1px solid #30363d;
-  color: #c9d1d9;
-  box-shadow: inset 0 1px 0 #21262d;
+  background-color: #161b22; /* dark subtle background */
+  color: #c9d1d9; /* light gray text */
+  border: none;
+  box-shadow: none;
 }
 
 /* Inline code style */
 #markdown-content code {
-  background-color: #e1e4e8;
+  background-color: #e1e4e8; /* subtle inline background */
   padding: 0.2em 0.4em;
   border-radius: 6px;
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 0.85em;
   color: #24292e;
   white-space: nowrap;
@@ -148,7 +147,7 @@ body.dark #markdown-content code {
   color: #c9d1d9;
 }
 
-/* Optional: subtle scrollbar styling for code blocks */
+/* Optional: subtle scrollbar for code blocks */
 #markdown-content pre::-webkit-scrollbar {
   height: 8px;
 }
