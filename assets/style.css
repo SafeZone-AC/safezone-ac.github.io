@@ -1,14 +1,10 @@
-/* --- Layout base --- */
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   display: flex;
   transition: background 0.3s, color 0.3s;
-  background-color: #fff;
-  color: #222;
-  height: 100vh;
-  overflow: hidden;
 }
+
 .sidebar {
   background-color: #252331;
   color: #fff;
@@ -16,228 +12,115 @@ body {
   min-height: 100vh;
   padding: 2rem 1rem;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
 }
+
 .sidebar h1 {
   color: #bd5ada;
   margin-bottom: 2rem;
-  font-weight: 700;
-  user-select: none;
 }
-.sidebar nav {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+
 .sidebar nav a {
   display: block;
   color: #eee;
   margin: 0.5rem 0;
   text-decoration: none;
   cursor: pointer;
-  font-weight: 600;
-  transition: color 0.2s, text-decoration 0.2s;
 }
+
 .sidebar nav a.active,
 .sidebar nav a:hover {
   text-decoration: underline;
   color: #bd5ada;
 }
+
 .sidebar nav button {
-  margin-top: auto;
+  margin-top: 1rem;
   background: none;
   border: 1px solid #ccc;
   color: #ccc;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
-  font-weight: 600;
-  border-radius: 4px;
-  transition: background-color 0.2s, color 0.2s;
-}
-.sidebar nav button:hover {
-  background-color: #bd5ada;
-  color: white;
 }
 
 .content {
   padding: 2rem;
   flex: 1;
+  background-color: #fff;
+  color: #222;
   overflow-y: auto;
+  height: 100vh;
   box-sizing: border-box;
 }
 
-/* Dark theme */
-body.dark {
+body.dark .content {
   background-color: #1e1e2f;
   color: #f5f5f5;
 }
-body.dark .sidebar {
-  background-color: #1a1930;
-}
-body.dark .sidebar h1 {
-  color: #d8a0ff;
-}
-body.dark .sidebar nav a {
-  color: #ccc;
-}
-body.dark .sidebar nav a.active,
-body.dark .sidebar nav a:hover {
-  color: #d8a0ff;
-  text-decoration: underline;
-}
-body.dark .sidebar nav button {
-  border-color: #888;
-  color: #888;
-}
-body.dark .sidebar nav button:hover {
-  background-color: #d8a0ff;
-  color: #1e1e2f;
-}
 
-/* --- Markdown styles --- */
-#markdown-content {
-  max-width: 800px;
-  margin: 0 auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-}
+/* ---------- CODE BLOCKS ---------- */
 
-/* Headings */
-#markdown-content h1 {
-  font-size: 2.4rem;
-  margin: 1.5rem 0 1rem;
-  border-bottom: 3px solid #bd5ada;
-  padding-bottom: 0.3rem;
-  font-weight: 700;
-  color: #682f92;
-}
-
-#markdown-content h2 {
-  font-size: 1.8rem;
-  margin: 1.5rem 0 1rem;
-  border-bottom: 2px solid #bd5ada;
-  padding-bottom: 0.2rem;
-  font-weight: 600;
-  color: #7a3cb5;
-}
-
-#markdown-content h3 {
-  font-size: 1.4rem;
-  margin: 1.2rem 0 0.8rem;
-  font-weight: 600;
-  color: #8c4ddd;
-}
-
-/* Paragraphs */
-#markdown-content p {
-  margin: 1rem 0;
-  font-size: 1rem;
-  color: #333;
-}
-
-/* Links */
-#markdown-content a {
-  color: #bd5ada;
-  text-decoration: none;
-  border-bottom: 1.5px solid #bd5adacc;
-  transition: border-color 0.3s ease;
-}
-#markdown-content a:hover {
-  border-color: #bd5ada;
-}
-
-/* Lists */
-#markdown-content ul, #markdown-content ol {
-  padding-left: 1.5rem;
-  margin: 1rem 0;
-}
-#markdown-content li {
-  margin: 0.3rem 0;
-}
-
-/* Blockquotes */
-#markdown-content blockquote {
-  border-left: 4px solid #bd5ada;
-  color: #555;
-  margin: 1rem 0;
-  padding-left: 1rem;
-  font-style: italic;
-  background: #f9f4fb;
-  border-radius: 4px;
-}
-
-/* Inline code */
-#markdown-content code {
-  background-color: #f0e5fa;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-family: 'Source Code Pro', monospace;
-  font-size: 0.95rem;
-  color: #5a2a8e;
-}
-
-/* Code blocks */
+/* Code block container */
 #markdown-content pre {
-  background-color: #2f2359;
-  color: #ddd;
-  padding: 1rem 1.2rem;
+  background-color: #f0eaff;
+  padding: 1em 1.2em;
   border-radius: 8px;
   overflow-x: auto;
-  font-family: 'Source Code Pro', monospace;
-  font-size: 0.95rem;
-  margin: 1.5rem 0;
-  box-shadow: 0 0 10px #bd5ada55;
-  line-height: 1.4;
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 8px rgba(189, 90, 170, 0.2);
+  position: relative;
+  counter-reset: linenumber;
+  margin: 1.5em 0;
+}
+
+/* Dark mode for code blocks */
+body.dark #markdown-content pre {
+  background-color: #3a3157;
+  box-shadow: 0 4px 8px rgba(87, 43, 111, 0.5);
+}
+
+/* Inline code style */
+#markdown-content code {
+  background-color: #f2e9ff;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.95em;
+  white-space: normal;
+  position: relative;
+  z-index: 1;
+}
+
+body.dark #markdown-content code {
+  background-color: #4e3d78;
+}
+
+/* Line numbers - requires JS to wrap lines for effect */
+#markdown-content pre code {
+  display: block;
+  counter-reset: linenumber;
+}
+
+#markdown-content pre code > * {
+  counter-increment: linenumber;
+  display: block;
+  padding-left: 3em;
   position: relative;
 }
 
-/* Code block label */
-#markdown-content pre::before {
-  content: "code";
+#markdown-content pre code > *::before {
+  content: counter(linenumber);
   position: absolute;
-  top: 8px;
-  right: 12px;
-  font-size: 0.7rem;
-  color: #bd5adacc;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 1px;
+  left: 0;
+  width: 2.5em;
+  text-align: right;
+  color: #a67ccf;
+  font-size: 0.85em;
+  user-select: none;
+  pointer-events: none;
 }
 
-/* Tables */
-#markdown-content table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5rem 0;
-  font-size: 0.95rem;
-}
-#markdown-content th, #markdown-content td {
-  border: 1px solid #ccc;
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-#markdown-content th {
-  background-color: #bd5ada;
-  color: white;
-}
-
-/* Horizontal rule */
-#markdown-content hr {
-  border: none;
-  border-top: 2px solid #bd5ada;
-  margin: 2rem 0;
-}
-
-/* Responsive tweaks */
-@media (max-width: 600px) {
-  #markdown-content {
-    padding: 0 0.5rem;
-  }
-  #markdown-content h1 {
-    font-size: 1.8rem;
-  }
-  #markdown-content h2 {
-    font-size: 1.4rem;
-  }
+/* Dark mode line numbers */
+body.dark #markdown-content pre code > *::before {
+  color: #b499d8;
 }
