@@ -107,8 +107,8 @@ body.dark .content {
 
 /* Container for fenced code blocks */
 #markdown-content pre {
-  background-color: #f6f8fa;
-  border: 1px solid #d0d7de;
+  background: transparent;   /* no white background */
+  border: 1px solid #ddd;    /* subtle light border */
   border-radius: 6px;
   padding: 1em 1.25em;
   overflow-x: auto;
