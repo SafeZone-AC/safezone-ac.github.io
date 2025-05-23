@@ -206,6 +206,16 @@ body.dark #markdown-content h3 {
 .token.punctuation { color: #24292e; }                   /* dark */
 .token.boolean { color: #005cc5; font-weight: 600; }     /* blue */
 
+.token.keyword { color: #d73a49; font-weight: 600; }
+.token.comment { color: #6a737d; font-style: italic; }
+.token.string { color: #032f62; }
+.token.boolean { color: #005cc5; }
+.token.number { color: #005cc5; }
+.token.tag { color: #22863a; }
+.token.attr-name { color: #6f42c1; }
+.token.attr-value { color: #032f62; }
+
+
 /* Highlight specific languages by class */
 
 /* Lua */
