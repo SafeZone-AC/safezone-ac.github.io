@@ -2,7 +2,6 @@ const content = document.getElementById('markdown-content');
 const links = document.querySelectorAll('.nav-link');
 const themeToggle = document.getElementById('theme-toggle');
 
-// Escape HTML special characters in code text
 function escapeHTML(str) {
   return str.replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -11,73 +10,73 @@ function escapeHTML(str) {
             .replace(/'/g, '&#39;');
 }
 
-// Simple Lua syntax highlighter (extend as needed)
+// Minimal Lua syntax highlighting
 function luaHighlight(code) {
-  // keywords
   const keywords = /\b(and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g;
-  // comments -- single line
   const comments = /--.*$/gm;
-  // strings (single or double quotes)
-  const strings = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+  const strings = /(["'])(?:\\.|(?!\1).)*\1/g;
 
-  code = code.replace(comments, '<span class="token comment">$&</span>');
-  code = code.replace(strings, '<span class="token string">$&</span>');
-  code = code.replace(keywords, '<span class="token keyword">$&</span>');
-  return code;
+  return code
+    .replace(comments, m => `<span class="token comment">${m}</span>`)
+    .replace(strings, m => `<span class="token string">${m}</span>`)
+    .replace(keywords, m => `<span class="token keyword">${m}</span>`);
 }
 
-// JavaScript syntax highlighter
+// Minimal JS syntax highlighting
 function jsHighlight(code) {
-  const keywords = /\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|async|await)\b/g;
+  const keywords = /\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/g;
   const comments = /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm;
-  const strings = /(["'`])(?:(?=(\\?))\2.)*?\1/g;
+  const strings = /(["'`])(?:\\.|(?!\1).)*\1/g;
+  const numbers = /\b\d+(\.\d+)?\b/g;
 
-  code = code.replace(comments, '<span class="token comment">$&</span>');
-  code = code.replace(strings, '<span class="token string">$&</span>');
-  code = code.replace(keywords, '<span class="token keyword">$&</span>');
-  return code;
+  return code
+    .replace(comments, m => `<span class="token comment">${m}</span>`)
+    .replace(strings, m => `<span class="token string">${m}</span>`)
+    .replace(numbers, m => `<span class="token number">${m}</span>`)
+    .replace(keywords, m => `<span class="token keyword">${m}</span>`);
 }
 
-// JSON syntax highlighter
+// Minimal JSON highlighting
 function jsonHighlight(code) {
-  code = code.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*?"(\s*:)?)/g, match => {
-    let cls = 'string';
-    if (/:$/.test(match)) cls = 'key';
-    return `<span class="token ${cls}">${match}</span>`;
-  });
-  code = code.replace(/\b(true|false|null)\b/g, '<span class="token boolean">$1</span>');
-  code = code.replace(/\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/g, '<span class="token number">$&</span>');
-  return code;
+  const keys = /"(\w+)"(?=\s*:)/g;
+  const strings = /"(?:\\.|[^"\\])*"/g;
+  const numbers = /\b\d+(\.\d+)?\b/g;
+  const boolNull = /\b(true|false|null)\b/g;
+
+  return code
+    .replace(keys, m => `<span class="token key">${m}</span>`)
+    .replace(strings, m => `<span class="token string">${m}</span>`)
+    .replace(numbers, m => `<span class="token number">${m}</span>`)
+    .replace(boolNull, m => `<span class="token boolean">${m}</span>`);
 }
 
-// SQL syntax highlighter
+// Minimal SQL highlighting
 function sqlHighlight(code) {
-  const keywords = /\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|JOIN|INNER|LEFT|RIGHT|ON|AS|AND|OR|NOT|NULL|IN|IS|LIKE|GROUP BY|ORDER BY|LIMIT|OFFSET|CREATE|TABLE|PRIMARY KEY|FOREIGN KEY|VALUES|ALTER|DROP|INDEX|VIEW|TRIGGER|UNION|ALL)\b/gi;
-  code = code.replace(keywords, '<span class="token keyword">$&</span>');
-  const strings = /(['"])(?:(?=(\\?))\2.)*?\1/g;
-  code = code.replace(strings, '<span class="token string">$&</span>');
-  return code;
+  const keywords = /\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|JOIN|ON|AS|ORDER BY|GROUP BY|LIMIT|OFFSET|DESC|ASC)\b/gi;
+  const strings = /'(?:\\.|[^'\\])*'/g;
+  const numbers = /\b\d+\b/g;
+  const comments = /--.*$/gm;
+
+  return code
+    .replace(comments, m => `<span class="token comment">${m}</span>`)
+    .replace(strings, m => `<span class="token string">${m}</span>`)
+    .replace(numbers, m => `<span class="token number">${m}</span>`)
+    .replace(keywords, m => `<span class="token keyword">${m.toUpperCase()}</span>`);
 }
 
-// HTML syntax highlighter
+// Minimal HTML/XML highlighting
 function htmlHighlight(code) {
-  // tags
-  code = code.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="token comment">$1</span>');
-  code = code.replace(/(&lt;\/?[\w-]+)([^&]*?)(&gt;)/g, (m, p1, p2, p3) => {
-    let tag = `<span class="token tag">${p1}</span>`;
-    let attrs = p2.replace(/([\w-:]+)(="[^"]*")?/g, (m2, name, value) => {
-      let attrName = `<span class="token attr-name">${name}</span>`;
-      let attrValue = value ? `<span class="token attr-value">${value}</span>` : '';
-      return attrName + attrValue;
-    });
-    return tag + attrs + `<span class="token tag">${p3}</span>`;
-  });
-  return code;
+  const tags = /(&lt;\/?[\w\s="'-.:]+&gt;)/g;
+  return code.replace(tags, m => `<span class="token tag">${m}</span>`);
 }
 
 function highlightCodeBlocks() {
-  const codeBlocks = content.querySelectorAll('pre code');
-  codeBlocks.forEach(code => {
+  const preBlocks = content.querySelectorAll('pre');
+  preBlocks.forEach(pre => {
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    // Detect language from class like "language-lua"
     const lang = code.className.replace('language-', '').toLowerCase();
 
     let html = escapeHTML(code.textContent);
@@ -94,7 +93,7 @@ function highlightCodeBlocks() {
       html = htmlHighlight(html);
     }
 
-    code.innerHTML = html;
+    pre.innerHTML = `<code class="${code.className}">${html}</code>`;
   });
 }
 
@@ -104,6 +103,7 @@ async function loadMarkdown(file) {
     const res = await fetch('md/' + file + '?t=' + Date.now()); // cache-buster
     if (!res.ok) throw new Error('Failed to load ' + file);
     const text = await res.text();
+
     content.innerHTML = marked.parse(text);
     highlightCodeBlocks();
   } catch (e) {
@@ -118,7 +118,7 @@ links.forEach(link => {
     link.classList.add('active');
     const mdFile = link.getAttribute('data-md');
     loadMarkdown(mdFile);
-    history.pushState(null, '', '#' + mdFile.replace('.md',''));
+    history.pushState(null, '', '#' + mdFile.replace('.md', ''));
   });
 });
 
