@@ -11,25 +11,12 @@ function escapeForSpan(str) {
             .replace(/'/g, '&#39;');
 }
 
-// *** Fixed Minimal Lua syntax highlighting ***
-function luaHighlight(code) {
-  const escape = str => str.replace(/&/g, '&amp;')
-                           .replace(/</g, '&lt;')
-                           .replace(/>/g, '&gt;')
-                           .replace(/"/g, '&quot;')
-                           .replace(/'/g, '&#39;');
-
-  code = escape(code);
-
-  const patterns = [
-    { type: 'comment', regex: /--.*$/gm },
-    { type: 'string', regex: /(["'])(?:\\.|(?!\1).)*\1/g },
-    { type: 'keyword', regex: /\b(and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g },
-  ];
-
+// Utility to highlight tokens without overlapping
+function highlightWithTokens(code, patterns) {
+  // code is already escaped
   let tokens = [];
 
-  patterns.forEach(({ type, regex }) => {
+  patterns.forEach(({type, regex}) => {
     let match;
     while ((match = regex.exec(code)) !== null) {
       tokens.push({
@@ -38,14 +25,14 @@ function luaHighlight(code) {
         type,
         text: match[0]
       });
-      // Prevent zero-length match infinite loop
-      if (regex.lastIndex === match.index) regex.lastIndex++;
+      if (regex.lastIndex === match.index) regex.lastIndex++; // avoid zero-length infinite loop
     }
   });
 
-  tokens.sort((a, b) => a.start - b.start);
+  // Sort tokens by start index
+  tokens.sort((a,b) => a.start - b.start);
 
-  // Filter overlapping tokens (keep earliest token only)
+  // Remove overlapping tokens - keep earliest token only
   let filtered = [];
   let lastEnd = 0;
   for (const token of tokens) {
@@ -58,67 +45,111 @@ function luaHighlight(code) {
   let result = '';
   let pos = 0;
   for (const token of filtered) {
-    if (pos < token.start) {
-      result += code.slice(pos, token.start);
-    }
+    if (pos < token.start) result += code.slice(pos, token.start);
     result += `<span class="token ${token.type}">${token.text}</span>`;
     pos = token.end;
   }
-  if (pos < code.length) {
-    result += code.slice(pos);
-  }
+  if (pos < code.length) result += code.slice(pos);
 
   return result;
 }
 
-// Minimal JS syntax highlighting
+// Lua highlighting
+function luaHighlight(code) {
+  const escaped = escapeForSpan(code);
+
+  const patterns = [
+    { type: 'comment', regex: /--.*$/gm },
+    { type: 'string', regex: /(["'])(?:\\.|(?!\1).)*\1/g },
+    { type: 'keyword', regex: /\b(and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g }
+  ];
+
+  return highlightWithTokens(escaped, patterns);
+}
+
+// JavaScript highlighting
 function jsHighlight(code) {
-  const keywords = /\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/g;
-  const comments = /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm;
-  const strings = /(["'`])(?:\\.|(?!\1).)*\1/g;
-  const numbers = /\b\d+(\.\d+)?\b/g;
+  const escaped = escapeForSpan(code);
 
-  code = code.replace(comments, m => `<span class="token comment">${escapeForSpan(m)}</span>`);
-  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
-  code = code.replace(numbers, m => `<span class="token number">${escapeForSpan(m)}</span>`);
-  code = code.replace(keywords, m => `<span class="token keyword">${escapeForSpan(m)}</span>`);
-  return code;
+  const patterns = [
+    { type: 'comment', regex: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm },
+    { type: 'string', regex: /(["'`])(?:\\.|(?!\1).)*\1/g },
+    { type: 'number', regex: /\b\d+(\.\d+)?\b/g },
+    { type: 'keyword', regex: /\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/g }
+  ];
+
+  return highlightWithTokens(escaped, patterns);
 }
 
-// Minimal JSON highlighting
+// JSON highlighting
 function jsonHighlight(code) {
-  const keys = /"(\w+)"(?=\s*:)/g;
-  const strings = /"(?:\\.|[^"\\])*"/g;
-  const numbers = /\b\d+(\.\d+)?\b/g;
-  const boolNull = /\b(true|false|null)\b/g;
+  const escaped = escapeForSpan(code);
 
-  code = code.replace(keys, m => `<span class="token key">${escapeForSpan(m)}</span>`);
-  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
-  code = code.replace(numbers, m => `<span class="token number">${escapeForSpan(m)}</span>`);
-  code = code.replace(boolNull, m => `<span class="token boolean">${escapeForSpan(m)}</span>`);
-  return code;
+  const patterns = [
+    { type: 'key', regex: /"(\w+)"(?=\s*:)/g },
+    { type: 'string', regex: /"(?:\\.|[^"\\])*"/g },
+    { type: 'number', regex: /\b\d+(\.\d+)?\b/g },
+    { type: 'boolean', regex: /\b(true|false|null)\b/g }
+  ];
+
+  return highlightWithTokens(escaped, patterns);
 }
 
-// Minimal SQL highlighting
+// SQL highlighting
 function sqlHighlight(code) {
-  const keywords = /\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|JOIN|ON|AS|ORDER BY|GROUP BY|LIMIT|OFFSET|DESC|ASC)\b/gi;
-  const strings = /'(?:\\.|[^'\\])*'/g;
-  const numbers = /\b\d+\b/g;
-  const comments = /--.*$/gm;
+  const escaped = escapeForSpan(code);
 
-  code = code.replace(comments, m => `<span class="token comment">${escapeForSpan(m)}</span>`);
-  code = code.replace(strings, m => `<span class="token string">${escapeForSpan(m)}</span>`);
-  code = code.replace(numbers, m => `<span class="token number">${escapeForSpan(m)}</span>`);
-  code = code.replace(keywords, m => `<span class="token keyword">${escapeForSpan(m.toUpperCase())}</span>`);
-  return code;
+  const patterns = [
+    { type: 'comment', regex: /--.*$/gm },
+    { type: 'string', regex: /'(?:\\.|[^'\\])*'/g },
+    { type: 'number', regex: /\b\d+\b/g },
+    { type: 'keyword', regex: /\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|JOIN|ON|AS|ORDER BY|GROUP BY|LIMIT|OFFSET|DESC|ASC)\b/gi }
+  ];
+
+  // We want keywords uppercase in output
+  let tokens = [];
+
+  patterns.forEach(({type, regex}) => {
+    let match;
+    while ((match = regex.exec(escaped)) !== null) {
+      let text = match[0];
+      if (type === 'keyword') text = text.toUpperCase();
+      tokens.push({ start: match.index, end: match.index + match[0].length, type, text });
+      if (regex.lastIndex === match.index) regex.lastIndex++;
+    }
+  });
+
+  tokens.sort((a,b) => a.start - b.start);
+
+  let filtered = [];
+  let lastEnd = 0;
+  for (const token of tokens) {
+    if (token.start >= lastEnd) {
+      filtered.push(token);
+      lastEnd = token.end;
+    }
+  }
+
+  let result = '';
+  let pos = 0;
+  for (const token of filtered) {
+    if (pos < token.start) result += escaped.slice(pos, token.start);
+    result += `<span class="token ${token.type}">${token.text}</span>`;
+    pos = token.end;
+  }
+  if (pos < escaped.length) result += escaped.slice(pos);
+
+  return result;
 }
 
-// Minimal HTML/XML highlighting
+// HTML/XML highlighting
 function htmlHighlight(code) {
-  // Escape whole code first, then wrap tags only
-  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Escape full code
+  const escaped = escapeForSpan(code);
+  // Highlight tags only
   const tags = /(&lt;\/?[\w\s="'-.:]+&gt;)/g;
-  return code.replace(tags, m => `<span class="token tag">${m}</span>`);
+
+  return escaped.replace(tags, m => `<span class="token tag">${m}</span>`);
 }
 
 function highlightCodeBlocks() {
@@ -133,19 +164,15 @@ function highlightCodeBlocks() {
 
     let highlighted;
 
-    if (lang === 'lua') {
-      highlighted = luaHighlight(rawCode);
-    } else if (lang === 'js' || lang === 'javascript') {
-      highlighted = jsHighlight(rawCode);
-    } else if (lang === 'json') {
-      highlighted = jsonHighlight(rawCode);
-    } else if (lang === 'sql') {
-      highlighted = sqlHighlight(rawCode);
-    } else if (lang === 'html' || lang === 'xml') {
-      highlighted = htmlHighlight(rawCode);
-    } else {
-      // fallback: just escape to avoid raw HTML injection
-      highlighted = escapeForSpan(rawCode);
+    switch (lang) {
+      case 'lua': highlighted = luaHighlight(rawCode); break;
+      case 'js':
+      case 'javascript': highlighted = jsHighlight(rawCode); break;
+      case 'json': highlighted = jsonHighlight(rawCode); break;
+      case 'sql': highlighted = sqlHighlight(rawCode); break;
+      case 'html':
+      case 'xml': highlighted = htmlHighlight(rawCode); break;
+      default: highlighted = escapeForSpan(rawCode);
     }
 
     pre.innerHTML = `<code class="${code.className}">${highlighted}</code>`;
